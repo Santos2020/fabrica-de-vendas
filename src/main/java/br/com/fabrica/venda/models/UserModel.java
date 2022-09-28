@@ -6,29 +6,36 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "TB_USER")
 public class UserModel implements UserDetails, Serializable {
-    private static final long serializableUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID userId;
     @Column(nullable = false, unique = true)
     private String username;
     @Column(nullable = false)
-    private String passoword;
+    private String password;
+    @ManyToMany
+    @JoinTable(name = "TB_USERS_ROLES",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<RoleModel> roles;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.roles;
     }
 
     @Override
     public String getPassword() {
-        return this.passoword;
+        return this.password;
     }
 
     @Override
@@ -56,23 +63,19 @@ public class UserModel implements UserDetails, Serializable {
         return true;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getUserId() {
+        return userId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
 
-    public String getPassoword() {
-        return passoword;
-    }
-
-    public void setPassoword(String passoword) {
-        this.passoword = passoword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
