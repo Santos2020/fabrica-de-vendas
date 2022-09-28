@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -32,16 +33,17 @@ public class ClienteController {
     public ClienteController(ClienteService clienteService) {
         this.clienteService = clienteService;
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
    @PostMapping
     public ResponseEntity<Object> saveCliente(@RequestBody @Valid ClienteDto clienteDto){
        if(clienteService.existsByname(clienteDto.getName())){
-           return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: License Plate Car is already in use!");
+           return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Client not found!");
        }
        if(clienteService.existsByCpf(clienteDto.getCpf())){
-           return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Parking Spot is already in use!");
+           return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Client not found!");
        }
        if(clienteService.existsByenderecoAndCidadeAndEstado(clienteDto.getEndereco(), clienteDto.getCidade(),clienteDto.getEstado())){
-           return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Parking Spot already registered for this apartment/block!");
+           return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Client not found!");
        }
 
        ClienteModel clienteModel = new ClienteModel();
@@ -49,6 +51,7 @@ public class ClienteController {
        clienteModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
        return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.save(clienteModel));
    }
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
    @GetMapping
     public ResponseEntity<Page<ClienteModel>> getAllVendas(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC)
                                                               Pageable pageable){
@@ -62,6 +65,7 @@ public class ClienteController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(clienteModelOptional.get());
    }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteVendas(@PathVariable(value = "id") UUID id){
         Optional<ClienteModel> clienteModelOptional = clienteService.findByid(id);
@@ -73,6 +77,7 @@ public class ClienteController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente deletado com Successufully");
 
        }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateVendas(@PathVariable(value = "id") UUID id,
                                                     @RequestBody @Valid ClienteDto clienteDto){
