@@ -23,12 +23,14 @@ public class ClienteModel implements Serializable {
     private String cidade;
     @Column(nullable = false)
     private String  estado;
+    @Column(nullable = false, length = 55)
+    private String  email;
+    @Column(nullable = false, length = 11)
+    private String  telefone;
     @Column(nullable = false, length = 11)
     private String  sexo;
     @Column(nullable = false)
     private LocalDateTime registrationDate;
-
-
 
     public UUID getId() {
         return id;
@@ -69,13 +71,30 @@ public class ClienteModel implements Serializable {
     public void setCidade(String cidade) {
         this.cidade = cidade;
     }
-        public String getEstado() {
-            return estado;
-        }
 
-        public void setEstado(String estado) {
-            this.estado = estado;
-        }
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
 
     public String getSexo() {
         return sexo;

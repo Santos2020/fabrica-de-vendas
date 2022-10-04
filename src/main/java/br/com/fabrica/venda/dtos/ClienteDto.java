@@ -23,11 +23,18 @@ public class ClienteDto {
     @Size(max = 255)
     private String  estado;
     @NotBlank
+     @Size(max = 55)
+    private String  email;
+
+    @NotBlank
+    @Size(max = 11)
+     private String  telefone;
+    @NotBlank
     @Size(max = 11)
     private String  sexo;
 
-   public String getName() {
-   return name;
+ public String getName() {
+  return name;
  }
 
  public void setName(String name) {
@@ -64,6 +71,22 @@ public class ClienteDto {
 
  public void setEstado(String estado) {
   this.estado = estado;
+ }
+
+ public String getEmail() {
+  return email;
+ }
+
+ public void setEmail(String email) {
+  this.email = email;
+ }
+
+ public String getTelefone() {
+  return telefone;
+ }
+
+ public void setTelefone(String telefone) {
+  this.telefone = telefone;
  }
 
  public String getSexo() {
